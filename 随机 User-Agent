@@ -1,36 +1,29 @@
-// Quantumult X 随机 User-Agent 脚本
-// 功能：所有请求自动替换随机 UA，支持 PC/移动/平板多端，主流浏览器全覆盖
-rewrite_fun_local("random_ua", function(req, res) {
-    // 1. 自定义 UA 池（可按需增删、调整顺序/数量，数量越多随机度越高）
-    // 格式：[PC端UA, 安卓Chrome, 安卓Firefox, iOS Safari, 平板iPad, Edge移动端, Mac Chrome, Windows Firefox]
+# Quantumult X 随机UA 正确配置（修复语法错误，直接使用）
+script-local = rewrite_fun_local("random_ua", function(req, res) {
+    // 1. 多端UA池（PC/安卓/iOS/平板，可按需增删）
     const uaList = [
-        // PC 端 - Chrome（Windows/macOS）
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
-        // PC 端 - Firefox/Edge
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:129.0) Gecko/20100101 Firefox/129.0",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) AppleWebKit/537.36 (KHTML, like Gecko) Edge/128.0.0.0 Safari/537.36",
-        // 移动端 - 安卓 Chrome/Firefox
-        "Mozilla/5.0 (Linux; Android 14; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36",
-        "Mozilla/5.0 (Android 14; Mobile; rv:129.0) Gecko/129.0 Firefox/129.0",
-        // 移动端 - iOS Safari（iPhone）
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1",
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/127.0.6533.101 Mobile/15E148 Safari/604.1",
-        // 平板 - iPad Safari/Chrome
-        "Mozilla/5.0 (iPad; CPU OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1",
-        "Mozilla/5.0 (Linux; Android 14; SM-X910) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+        // PC端 - Chrome/Edge/Firefox
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_6) AppleWebKit/537.36 (KHTML, like Gecko) Edge/128.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 11.0; Win64; x64; rv:130.0) Gecko/20100101 Firefox/130.0",
+        // 移动端 - 安卓Chrome/iOS Safari
+        "Mozilla/5.0 (Linux; Android 14; SM-S908B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1",
+        // 平板端 - iPad Safari/安卓平板Chrome
+        "Mozilla/5.0 (iPad; CPU OS 17_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (Linux; Android 14; SM-X810) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
     ];
 
-    // 2. 随机获取一个 UA（核心逻辑：Math.random 取随机索引）
+    // 2. 随机获取UA（核心逻辑不变）
     const randomIndex = Math.floor(Math.random() * uaList.length);
     const randomUA = uaList[randomIndex];
 
-    // 3. 替换请求头中的 User-Agent（覆盖原有 UA，无则新增）
+    // 3. 替换UA（兼容大小写请求头，避免漏替换）
     req.headers["User-Agent"] = randomUA;
-    req.headers["user-agent"] = randomUA; // 兼容小写键名，避免漏替换
+    req.headers["user-agent"] = randomUA;
 
-    // 可选：打印日志（Quantumult X 控制台可查看，方便调试）
+    // 调试日志（控制台可查看，可选保留）
     console.log(`[随机UA] 已替换：${randomUA}`);
 
     return req;
-});
+})
